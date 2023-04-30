@@ -21,13 +21,20 @@ test('My group component check', async ({ page }) => {
     const nameInputFeild = page.getByPlaceholder('Enter group name')
     await nameInputFeild.fill('Riaz-group-6');
     await page.getByRole('combobox').selectOption('{"email":"meraz@gmail.com","id":102,"name":"Meraz","role":"member"}');
-    page.once('dialog', dialog => {
-        const text = dialog.message()
+
+    // handle the alert message
+    page.once('dialog', async (alert) => {
+        const text = alert.message()
         console.log(`Dialog message: ${text}`);
-        dialog.dismiss().catch(() => { });
+        // assertion to check the alert message with expected value.
+        // Give error because of receiving empty string ("") but expected 'Updated' - Console shows the message but here received empty string
+
+        // await expect(page.locator(`text=${"" + text}`)).toContainText("" + 'Updated')
+
+        alert.dismiss().catch(() => { });
     });
+
     await page.getByRole('button', { name: 'Update group' }).click();
-    // need assertion to check the alert message with expected value.
 
     await page.pause()
 })
